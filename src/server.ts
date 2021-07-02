@@ -15,6 +15,8 @@ import * as path from 'path';
 import {Stream} from 'stream';
 
 import Koa = require('koa');
+import conditional = require('koa-conditional-get');
+import etag = require('koa-etag');
 import mount = require('koa-mount');
 import send = require('koa-send');
 import getStream = require('get-stream');
@@ -90,6 +92,9 @@ export class Server {
     this.server = server;
     const app = new Koa();
 
+    // conditional() and etag() add eTag support
+    app.use(conditional());
+    app.use(etag());
     app.use(bodyParser());
     app.use(mount('/submitResults', this.submitResults.bind(this)));
     app.use(this.instrumentRequests.bind(this));
